@@ -30,9 +30,9 @@ body {
   width: 45%;
 }
 
-.column-left .row input:last-child {
+.column-left .row button {
   flex-grow: 1;
-  margin-right: 0;
+  padding: 3px;
 }
 
 .column-right {
@@ -65,7 +65,7 @@ body {
 }
 
 .row:last-child {
-  border-bottom-color: #ccc; 
+  border-bottom-color: #ccc;
 }
 
 .row input {

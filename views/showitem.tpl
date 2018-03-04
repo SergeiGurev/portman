@@ -16,11 +16,11 @@
         </div>
         %for row in gw:
         <form action="submit" method="post" class="row">
-          <input type="hidden" value={{row[0]}} name=gw_id>
-          <input type="text" value={{row[1]}}  style="width:150px;">
-          <input type="text" value={{row[2]}}  style="width:200px;">
-          <input type="text" value={{row[3]}}  style="width:50px;">
-          <input type="reset" value="Submit">
+          <input type="hidden" value={{row[0]}} name="gw_id">
+          <input type="text" value={{row[1]}} name="ip" style="width:150px;">
+          <input type="text" value={{row[2]}} name="serial" style="width:200px;">
+          <input type="text" value={{row[3]}} name="num_of_ports" style="width:50px;">
+          <button type="submit">Submit</button>
         </form>
         %end
       </div>
@@ -36,9 +36,9 @@
 
         %for row in ports:
         <form action="submit_port" method="post" class="row">
-          <input type="hidden" value={{row[3]}} name=gw_id>
-          <input type="text" value={{row[0]}} pattern="[0-9]{,3}" style="width:50px;" name="port_id">
-          <input type="text" value={{row[4]}} pattern="[0-9]{,3}" style="width:50px;" name="port_gw">
+          <input type="hidden" value={{row[3]}} name="gw_id">
+          <input type="text" value={{row[0]}} pattern="[0-9]{1,3}" style="width:50px;" name="port_id">
+          <input type="text" value={{row[4]}} pattern="[0-9]{1,3}" style="width:50px;" name="port_gw">
           <input type="text" value={{row[1]}} style="width:150px;" name="port_num">
           %if row[2]==1:
             <input type="checkbox" checked name="enabled" style="width:50px;">
@@ -47,10 +47,12 @@
           %end
           <button type="button" value="Request_num" method="get" formaction="/num_req/{{row[0]}}">Request number</button>
           <button type="button" value="Request_bal">Request balance</button>
-          <button type="submit" value="Submit">Submit changes</button>
+          <button type="submit">Submit changes</button>
         </form>
         %end
       </div>
     </div>
+
+    <script type="text/javascript" src="js/main.js"></script>
   </body>
 </html>
