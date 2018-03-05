@@ -23,7 +23,7 @@ for (var i = 0; i < forms.length; i++) {
       values[inputs[j].getAttribute('name')] = inputs[j].value;
     }
 
-    console.log(values);
-    ajax('/test', values, cb);
+    console.log(JSON.stringify(values));
+    ajax('/test', JSON.stringify(values), cb);
   })
 }
