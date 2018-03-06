@@ -98,7 +98,7 @@ def test_subm():
   db.close()
 
 @route('/set_port', method='POST')
-def set_port()
+def set_port():
   data = request.json
   gw_id=data.get('gw_id')
   port=data.get('port_id')
