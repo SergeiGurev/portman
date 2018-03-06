@@ -71,6 +71,25 @@ def port_list():
     result = cursor.fetchall()
     db.close()
     return json.dumps(result)
-
+@route('/test', method='POST')
+def test_subm():
+  print('Got request')
+  data = request.json
+  gw_id=data.get('gw_id')
+  serial=data.get('serial')
+  num_of_ports=data.get('num_of_ports')
+  ip=data.get('ip')
+  
+  db = MySQLdb.connect("localhost","asterisk","","asterisk")
+  cursor = db.cursor()
+  
+  if gw_id == 0:
+    cursor.execute('INSERT into gateways(ipaddress,portnum,serial) values(%s,%s,%s)',(ip,num_of_ports,serial))
+  else:
+    cursor.execute('UPDATE gateways set ipaddress = %s, portnum = %s, serial = %s where id=%s',(ip,num_of_ports,serial,gw_id))
+    
+  db.commit()
+  db.close()
+  
 debug(True)
 run(port=6880, debug=True, reloader=True)

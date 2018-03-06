@@ -8,6 +8,7 @@ function ajax(address, data, cb) {
   var oReq = new XMLHttpRequest();
   oReq.onload = cb;
   oReq.open('post', address, true);
+  oReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   oReq.send(data);
 }
 
