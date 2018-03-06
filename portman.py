@@ -5,13 +5,19 @@ import json
 
 from bottle import route, run, template, debug, post, request, static_file
 
+global dbhost,dbname,dbuser,dbpass
+dbhost='localhost'
+dbname='asterisk'
+dbuser='asterisk'
+dbpass=''
+
 @route('/<filename:path>')
 def send_static(filename):
     return static_file(filename, root='views/')
 
 @route('/')
 def show():
-    db = MySQLdb.connect("localhost","asterisk","","asterisk")
+    db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
     cursor_ports = db.cursor()
     cursor_ports.execute('SELECT Port,number,DateDisabled IS NULL,gw_id,port_on_gw From ports')
     rows_ports = cursor_ports.fetchall()
@@ -34,7 +40,7 @@ def submit_port():
     enabled = request.forms.get("enabled") == "on"
     query_sent = "no"
 
-    db = MySQLdb.connect("localhost","asterisk","","asterisk")
+    db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
     cursor = db.cursor()
     cursor.execute('SELECT number,DateDisabled IS NULL,gw_id,port_on_gw From ports where port = %s',(port,))
     result = cursor.fetchone()
@@ -56,7 +62,7 @@ def submit_port():
 
 @route('/gw_list')
 def gw_list():
-    db = MySQLdb.connect("localhost","asterisk","","asterisk")
+    db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
     cursor = db.cursor()
     cursor.execute('SELECT id,ipaddress,serial,portnum From gateways where id in (Select gw_id from ports)')
     result = cursor.fetchall()
@@ -65,31 +71,73 @@ def gw_list():
 
 @route('/port_list')
 def port_list():
-    db = MySQLdb.connect("localhost","asterisk","","asterisk")
+    db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
     cursor = db.cursor()
     cursor.execute('SELECT Port,number,DateDisabled IS NULL,gw_id,port_on_gw From ports')
     result = cursor.fetchall()
     db.close()
     return json.dumps(result)
-@route('/test', method='POST')
+
+@route('/set_gw', method='POST')
 def test_subm():
-  print('Got request')
   data = request.json
   gw_id=data.get('gw_id')
   serial=data.get('serial')
   num_of_ports=data.get('num_of_ports')
   ip=data.get('ip')
   
-  db = MySQLdb.connect("localhost","asterisk","","asterisk")
+  db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
   cursor = db.cursor()
   
   if gw_id == 0:
     cursor.execute('INSERT into gateways(ipaddress,portnum,serial) values(%s,%s,%s)',(ip,num_of_ports,serial))
   else:
     cursor.execute('UPDATE gateways set ipaddress = %s, portnum = %s, serial = %s where id=%s',(ip,num_of_ports,serial,gw_id))
-    
+
   db.commit()
   db.close()
+
+@route('/set_port', method='POST')
+def set_port()
+  data = request.json
+  gw_id=data.get('gw_id')
+  port=data.get('port_id')
+  port_on_gw=data.get('port_gw')
+  number=data.get('port_num')
+  enabled=data.get('enabled')
+  
+  db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
+  cursor = db.cursor()
+  
+  cursor.execute('UPDATE ports set number = %s,IF(%s=1,DateDisabled = NULL, DateDisabled = NOW())',(number,enabled))
+  
+  db.commit()
+  db.close()
+  
+@route('/get_gw', method='POST')  
+def get_gw():
+    db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
+    cursor = db.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT id,ipaddress,serial,portnum From gateways')
+    result = cursor.fetchall()
+    db.close()
+    return json.dumps(result)
+    
+
+@route('/get_port', method='POST')  
+def get_gw():
+    data = request.json
+    gw_id = data.get('gw_id')
+    db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
+    cursor = db.cursor(MySQLdb.cursors.DictCursor)
+    if gw_id == 0:
+      cursor.execute('SELECT port,number,DateDisabled IS NULL as disabled,gw_id,port_on_gw From ports')
+    else:
+      cursor.execute('SELECT port,number,DateDisabled IS NULL as disabled,gw_id,port_on_gw From ports where gw_id = %s',(gw_id))
+    result = cursor.fetchall()
+    db.close()    
+ 
+    return json.dumps(result)
   
 debug(True)
 run(port=6880, debug=True, reloader=True)
