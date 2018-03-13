@@ -2,6 +2,7 @@ import MySQLdb
 import requests
 import shutil
 import json
+import random
 
 from bottle import route, run, template, debug, post, request, static_file
 
@@ -126,19 +127,26 @@ def get_gw():
     
 
 @route('/get_port', method='POST')  
-def get_gw():
+def get_port():
     data = request.json
     gw_id = data.get('gw_id')
     db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
     cursor = db.cursor(MySQLdb.cursors.DictCursor)
     if gw_id == 0:
-      cursor.execute('SELECT port,number,DateDisabled IS NULL as disabled,gw_id,port_on_gw From ports')
+      cursor.execute('SELECT port,number,DateDisabled IS NULL as enabled,gw_id,port_on_gw From ports')
     else:
-      cursor.execute('SELECT port,number,DateDisabled IS NULL as disabled,gw_id,port_on_gw From ports where gw_id = %s',(gw_id))
+      cursor.execute('SELECT port,number,DateDisabled IS NULL as enabled,gw_id,port_on_gw From ports where gw_id = %s',(gw_id))
     result = cursor.fetchall()
     db.close()    
  
     return json.dumps(result)
+
+@route('/get_num', method='POST')
+def get_num():
+    data = request.json
+    port = data.get('port')
+    
+    return str(port) + '<-port' + str(random.randrange(100000,999999,2))
   
 debug(True)
 run(port=6880, debug=True, reloader=True)
