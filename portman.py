@@ -11,12 +11,11 @@ dbname='asterisk'
 dbuser='asterisk'
 dbpass=''
 
-@route('/<filename:path>')
-def send_static(filename):
-    return static_file(filename, root='views/')
+
 
 @route('/')
 def show():
+    
     db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
     cursor_ports = db.cursor()
     cursor_ports.execute('SELECT Port,number,DateDisabled IS NULL,gw_id,port_on_gw From ports')
@@ -50,7 +49,7 @@ def submit_port():
 
     if result[1] != enabled:
       if enabled == 0:
-        cursor.execute('UPDATE ports set DateDisabled = NOW where port = %s',(port))
+        cursor.execute('UPDATE ports set DateDisabled = NOW() where port = %s',(port))
         db.commit()
 
       else:
@@ -98,7 +97,7 @@ def test_subm():
   db.close()
 
 @route('/set_port', method='POST')
-def set_port()
+def set_port():
   data = request.json
   gw_id=data.get('gw_id')
   port=data.get('port_id')
