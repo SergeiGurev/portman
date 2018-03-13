@@ -29,27 +29,27 @@
       </div>
     </div>
 
-    <template id="port-template">
-      <form action="submit_port" method="post" class="row">
+    <template id="gw-template">
+      <form action="submit" method="post" class="row gw">
         <input type="hidden" name="gw_id">
-        <input type="text" pattern="[0-9]{1,3}" style="width:50px;" name="port_id">
-        <input type="text" pattern="[0-9]{1,3}" style="width:50px;" name="port_gw">
-        <input type="text" style="width:150px;" name="port_num">
-        <input type="checkbox" checked name="enabled" style="width:50px;">
-        <button type="button">Request number</button>
-        <button type="button">Request balance</button>
-        <button type="submit">Submit changes</button>
+        <input type="text" name="ipaddress" style="width:150px;">
+        <input type="text" name="serial" style="width:150px;">
+        <input type="text" name="portnum" style="width:50px;">
+        <button type="button" class="show-ports-btn">Show ports</button>
+        <button type="submit">Submit</button>
       </form>
     </template>
 
-    <template id="gw-template">
-      <form action="submit" method="post" class="row">
+    <template id="port-template">
+      <form action="submit_port" method="post" class="row">
         <input type="hidden" name="gw_id">
-        <input type="text" name="ip" style="width:150px;">
-        <input type="text" name="serial" style="width:150px;">
-        <input type="text" name="num_of_ports" style="width:50px;">
-        <button type="button">Show ports</button>
-        <button type="submit">Submit</button>
+        <input type="text" pattern="[0-9]{1,3}" style="width:50px;" name="port">
+        <input type="text" pattern="[0-9]{1,3}" style="width:50px;" name="port_on_gw">
+        <input type="text" style="width:150px;" name="number">
+        <input type="checkbox" name="enabled" style="width:50px;">
+        <button type="button">Request number</button>
+        <button type="button">Request balance</button>
+        <button type="submit">Submit changes</button>
       </form>
     </template>
 

@@ -16,6 +16,15 @@ body {
   margin: 0 auto;
 }
 
+.gateways,
+.ports {
+  background-color: #ccc;
+}
+
+.active {
+  background-color: #05E607;
+}
+
 .column {
   display: flex;
   flex-direction: column;
@@ -60,7 +69,6 @@ body {
   height: 50px;
   padding: 5px;
   border-bottom: 1px solid #aaa;
-  background-color: #ccc;
   border-top: none;
 }
 
