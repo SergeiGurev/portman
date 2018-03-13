@@ -11,7 +11,9 @@ dbname='asterisk'
 dbuser='asterisk'
 dbpass=''
 
-
+@route('/<filename:path>')
+def send_static(filename):
+    return static_file(filename, root='views/')
 
 @route('/')
 def show():
