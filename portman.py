@@ -36,28 +36,30 @@ def show():
 
 @route('/submit_port', method='POST')
 def submit_port():
-    port = request.forms.get("port_id")
-    gw = request.forms.get("port_gw")
-    number = request.forms.get("port_num")
+    port = request.forms.get("port")
+    gw = request.forms.get("port_on_gw")
+    number = request.forms.get("number")
     enabled = request.forms.get("enabled") == "on"
     query_sent = "no"
 
     db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
     cursor = db.cursor()
-    cursor.execute('SELECT number,DateDisabled IS NULL,gw_id,port_on_gw From ports where port = %s',(port,))
+    cursor.execute('SELECT number,DateDisabled IS NULL From ports where port = %s',(port,))
     result = cursor.fetchone()
-    if result[0] != number:
-      cursor.execute('UPDATE ports set number = %s where port = %s',(number,port))
-      db.commit()
-
-    if result[1] != enabled:
-      if enabled == 0:
-        cursor.execute('UPDATE ports set DateDisabled = NOW() where port = %s',(port))
+    
+    if number != None:
+      if result[0] != number:
+        cursor.execute('UPDATE ports set number = %s where port = %s',(number,port))
         db.commit()
-
-      else:
-        cursor.execute('UPDATE ports set DateDisabled = NULL where port = %s',(port))
-        db.commit()
+    
+    if enabled != None:
+      if result[1] != enabled:
+        if enabled == 0:
+          cursor.execute('UPDATE ports set DateDisabled = NOW() where port = %s',(port))
+          db.commit()
+        else:
+          cursor.execute('UPDATE ports set DateDisabled = NULL where port = %s',(port))
+          db.commit()
 
     db.close()
     return "OK"
