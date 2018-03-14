@@ -59,7 +59,7 @@ function renderPorts(data) {
     portElement.querySelector('input[name="port"]').value = it['port'];
     portElement.querySelector('input[name="port_on_gw"]').value = it['port_on_gw'];
     portElement.querySelector('input[name="number"]').value = it['number'];
-    portElement.querySelector('input[name="enabled"]').checked = (it['disabled'] === 1);
+    portElement.querySelector('input[name="enabled"]').checked = (it['enabled'] === 1);
     fragment.appendChild(portElement);
   })
 
