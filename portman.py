@@ -18,7 +18,7 @@ def send_static(filename):
 
 @route('/')
 def show():
-    
+
     db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
     cursor_ports = db.cursor()
     cursor_ports.execute('SELECT Port,number,DateDisabled IS NULL,gw_id,port_on_gw From ports')
@@ -87,10 +87,10 @@ def test_subm():
   serial=data.get('serial')
   num_of_ports=data.get('num_of_ports')
   ip=data.get('ip')
-  
+
   db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
   cursor = db.cursor()
-  
+
   if gw_id == 0:
     cursor.execute('INSERT into gateways(ipaddress,portnum,serial) values(%s,%s,%s)',(ip,num_of_ports,serial))
   else:
@@ -107,16 +107,16 @@ def set_port():
   port_on_gw=data.get('port_gw')
   number=data.get('port_num')
   enabled=data.get('enabled')
-  
+
   db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
   cursor = db.cursor()
-  
+
   cursor.execute('UPDATE ports set number = %s,IF(%s=1,DateDisabled = NULL, DateDisabled = NOW())',(number,enabled))
-  
+
   db.commit()
   db.close()
-  
-@route('/get_gw', method='POST')  
+
+@route('/get_gw', method='POST')
 def get_gw():
     db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
     cursor = db.cursor(MySQLdb.cursors.DictCursor)
@@ -124,9 +124,9 @@ def get_gw():
     result = cursor.fetchall()
     db.close()
     return json.dumps(result)
-    
 
-@route('/get_port', method='POST')  
+
+@route('/get_port', method='POST')
 def get_port():
     data = request.json
     gw_id = data.get('gw_id')
@@ -137,16 +137,16 @@ def get_port():
     else:
       cursor.execute('SELECT port,number,DateDisabled IS NULL as enabled,gw_id,port_on_gw From ports where gw_id = %s',(gw_id))
     result = cursor.fetchall()
-    db.close()    
- 
+    db.close()
+
     return json.dumps(result)
 
 @route('/get_num', method='POST')
 def get_num():
     data = request.json
     port = data.get('port')
-    
+
     return str(port) + '<-port' + str(random.randrange(100000,999999,2))
-  
+
 debug(True)
 run(port=6880, debug=True, reloader=True)

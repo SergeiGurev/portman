@@ -25,11 +25,11 @@ function renderGW(data) {
 
   data.forEach(function(it) {
     var gwElement = gwTemplate.cloneNode(true);
-    gwElement.querySelector('input[name="gw_id"]').value = it['id'];
-    gwElement.querySelector('input[name="ipaddress"]').value = it['ipaddress'];
-    gwElement.querySelector('input[name="serial"]').value = it['serial'];
-    gwElement.querySelector('input[name="portnum"]').value = it['portnum'];
-    gwElement.querySelector('.show-ports-btn').addEventListener('click', function() {
+    gwElement.querySelector('.gw__id').value = it['id'];
+    gwElement.querySelector('.gw__ipaddr').value = it['ipaddress'];
+    gwElement.querySelector('.gw__serial').value = it['serial'];
+    gwElement.querySelector('.gw__port-num').value = it['portnum'];
+    gwElement.querySelector('.gw__show-ports-btn').addEventListener('click', function() {
       var req = {};
       req['gw_id'] = it['id'] + '';
       ajax('/get_port', JSON.stringify(req), renderPorts);
@@ -38,6 +38,10 @@ function renderGW(data) {
         rows[i].classList.remove('active');
       }
       this.parentNode.classList.add('active');
+    })
+    gwElement.querySelector('.gw__submit-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      setChanges(this.parentNode, '/set_gw');
     })
     fragment.appendChild(gwElement);
   })
@@ -55,14 +59,33 @@ function renderPorts(data) {
 
   data.forEach(function(it) {
     var portElement = portTemplate.cloneNode(true);
-    portElement.querySelector('input[name="gw_id"]').value = it['gw_id'];
-    portElement.querySelector('input[name="port"]').value = it['port'];
-    portElement.querySelector('input[name="port_on_gw"]').value = it['port_on_gw'];
-    portElement.querySelector('input[name="number"]').value = it['number'];
-    portElement.querySelector('input[name="enabled"]').checked = (it['enabled'] === 1);
+    portElement.querySelector('.port__gw-id').value = it['gw_id'];
+    portElement.querySelector('.port__id').value = it['port'];
+    portElement.querySelector('.port__on-gw').value = it['port_on_gw'];
+    portElement.querySelector('.port__num').value = it['number'];
+    portElement.querySelector('.port__on-off').checked = (it['enabled'] === 1);
+    portElement.querySelector('.port__submit-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      setChanges(this.parentNode, '/set_port');
+    })
     fragment.appendChild(portElement);
   })
 
   portsCont.innerHTML = '';
   portsCont.appendChild(fragment);
+}
+
+function setChanges(elem, address) {
+  var data = {},
+      inputs = elem.querySelectorAll('.ch-input');
+
+  for (var i = 0; i < inputs.length; i++) {
+    if (inputs[i].getAttribute('type') === 'checkbox') {
+      data[inputs[i].getAttribute('name')] = inputs[i].checked;
+    } else {
+      data[inputs[i].getAttribute('name')] = inputs[i].value;
+    }
+  }
+
+  ajax(address, JSON.stringify(data));
 }
