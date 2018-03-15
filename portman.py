@@ -147,7 +147,7 @@ def get_port():
 @route('/get_num', method='POST')
 def get_num():
     data = request.json
-    port = data.get('port')
+    port = data.get('port_id')
     
     return str(port) + '<-port' + str(random.randrange(100000,999999,2))
   
