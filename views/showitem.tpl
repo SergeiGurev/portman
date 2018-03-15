@@ -47,7 +47,7 @@
         <input type="text" pattern="[0-9]{1,3}" style="width:50px;" name="port_gw" class="port__on-gw ch-input">
         <input type="text" style="width:150px;" name="port_num" class="port__num ch-input">
         <input type="checkbox" name="enabled" style="width:50px;" class="port__on-off ch-input">
-        <button type="button">Request number</button>
+        <button type="button" class="port__req-num-btn">Request number</button>
         <button type="button">Request balance</button>
         <button type="submit" class="port__submit-btn">Submit changes</button>
       </form>

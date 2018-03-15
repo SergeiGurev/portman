@@ -12,12 +12,13 @@ function ajax(address, data, cb, asinc) {
   function loadHendler() {
     // console.log(oReq.responseText);
 
-    if (cb) cb(JSON.parse(oReq.responseText));
+    if (cb) cb(oReq.responseText);
   }
 }
 
 function renderGW(data) {
   if (!data) return;
+  data = JSON.parse(data);
 
   var fragment = document.createDocumentFragment();
   var gwTemplate = document.querySelector('#gw-template').content;
@@ -52,6 +53,7 @@ function renderGW(data) {
 
 function renderPorts(data) {
   if (!data) return;
+  data = JSON.parse(data);
 
   var fragment = document.createDocumentFragment();
   var portTemplate = document.querySelector('#port-template').content;
@@ -67,6 +69,9 @@ function renderPorts(data) {
     portElement.querySelector('.port__submit-btn').addEventListener('click', function(e) {
       e.preventDefault();
       setChanges(this.parentNode, '/set_port');
+    })
+    portElement.querySelector('.port__req-num-btn').addEventListener('click', function() {
+      setPortNum(this.parentNode);
     })
     fragment.appendChild(portElement);
   })
@@ -88,4 +93,15 @@ function setChanges(elem, address) {
   }
 
   ajax(address, JSON.stringify(data));
+}
+
+function setPortNum(elem) {
+  var portID = elem.querySelector('.port__id'),
+      req = {},
+      setNum = function(data) {
+        elem.querySelector('.port__num').value = data;
+      };
+
+  req[portID.getAttribute('name')] = portID.value;
+  ajax('/get_num', JSON.stringify(req), setNum);
 }
