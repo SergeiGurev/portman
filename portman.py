@@ -34,14 +34,15 @@ def show():
 #@route('/num_req/<port>')
 #def num_req(port):
 
-@route('/submit_port', method='POST')
-def submit_port():
-    port = request.forms.get("port")
-    gw = request.forms.get("port_on_gw")
-    number = request.forms.get("number")
-    enabled = request.forms.get("enabled") == "on"
+@route('/set_port', method='POST')
+def set_port():
+    data = request.json
+    port = data.get("port_id")
+    gw = data.get("port_on_gw")
+    number = data.get("port_num")
+    enabled = data.get("enabled") 
     query_sent = "no"
-
+    print(number)
     db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
     cursor = db.cursor()
     cursor.execute('SELECT number,DateDisabled IS NULL From ports where port = %s',(port,))
@@ -87,8 +88,8 @@ def test_subm():
   data = request.json
   gw_id=data.get('gw_id')
   serial=data.get('serial')
-  num_of_ports=data.get('num_of_ports')
-  ip=data.get('ip')
+  num_of_ports=data.get('portnum')
+  ip=data.get('ipaddress')
   
   db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
   cursor = db.cursor()
@@ -101,22 +102,22 @@ def test_subm():
   db.commit()
   db.close()
 
-@route('/set_port', method='POST')
-def set_port():
-  data = request.json
-  gw_id=data.get('gw_id')
-  port=data.get('port_id')
-  port_on_gw=data.get('port_gw')
-  number=data.get('port_num')
-  enabled=data.get('enabled')
-  
-  db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
-  cursor = db.cursor()
-  
-  cursor.execute('UPDATE ports set number = %s,IF(%s=1,DateDisabled = NULL, DateDisabled = NOW())',(number,enabled))
-  
-  db.commit()
-  db.close()
+#@route('/set_port', method='POST')
+#def set_port():
+#  data = request.json
+#  gw_id=data.get('gw_id')
+#  port=data.get('port_id')
+#  port_on_gw=data.get('port_gw')
+#  number=data.get('port_num')
+#  enabled=data.get('enabled')
+#  
+#  db = MySQLdb.connect(dbhost,dbname,dbpass,dbuser)
+#  cursor = db.cursor()
+#  
+#  cursor.execute('UPDATE ports set number = %s,IF(%s=1,DateDisabled = NULL, DateDisabled = NOW())',(number,enabled))
+#  
+#  db.commit()
+#  db.close()
   
 @route('/get_gw', method='POST')  
 def get_gw():
