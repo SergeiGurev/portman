@@ -149,7 +149,7 @@ def get_num():
     data = request.json
     port = data.get('port_id')
     
-    return str(port) + '<-port' + str(random.randrange(100000,999999,2))
+    return (str(port) + "=" + str(random.randrange(100000,999999,2)))
   
 debug(True)
 run(port=6880, debug=True, reloader=True)
