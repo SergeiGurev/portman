@@ -71,6 +71,7 @@ function renderPorts(data) {
       setChanges(this.parentNode, '/set_port');
     })
     portElement.querySelector('.port__req-num-btn').addEventListener('click', function() {
+      this.setAttribute('disabled', true);
       setPortNum(this.parentNode);
     })
     fragment.appendChild(portElement);
@@ -95,11 +96,12 @@ function setChanges(elem, address) {
   ajax(address, JSON.stringify(data));
 }
 
-function setPortNum(elem) {
+function setPortNum(elem, btn) {
   var portID = elem.querySelector('.port__id'),
       req = {},
       setNum = function(data) {
         elem.querySelector('.port__num').value = data;
+        elem.querySelector('.port__req-num-btn').removeAttribute('disabled');
       };
 
   req[portID.getAttribute('name')] = portID.value;
